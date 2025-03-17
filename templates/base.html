@@ -1,0 +1,25 @@
+<!--
+base.html
+
+Base template that includes common HTML structure.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Chat Application</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Real-Time Chat Application</h1>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 ChatApp</p>
+    </footer>
+</body>
+</html>
