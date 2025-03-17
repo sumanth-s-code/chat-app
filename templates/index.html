@@ -1,0 +1,27 @@
+<!--
+index.html
+
+Landing page where users can select or create a chat room.
+-->
+
+{% extends "base.html" %}
+{% block content %}
+    <h2>Welcome to the Chat Application</h2>
+    <form action="/chat/" method="get" onsubmit="joinRoom(event)">
+        <label for="room">Enter Chat Room Name:</label>
+        <input type="text" id="room" name="room" required>
+        <label for="username">Your Name:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Join Room</button>
+    </form>
+
+    <script>
+        function joinRoom(event) {
+            event.preventDefault();
+            var room = document.getElementById('room').value;
+            var username = document.getElementById('username').value;
+            // Redirect to the chat page with the room name as a URL parameter
+            window.location.href = '/chat/' + room + '?username=' + encodeURIComponent(username);
+        }
+    </script>
+{% endblock %}
