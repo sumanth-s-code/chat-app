@@ -1,0 +1,64 @@
+<!--
+chat.html
+
+Chat room interface where messages are sent and received in real time.
+-->
+
+{% extends "base.html" %}
+{% block content %}
+    <h2>Chat Room: {{ room }}</h2>
+    <div id="chat-window">
+        <ul id="messages"></ul>
+    </div>
+    <form id="chat-form" onsubmit="sendMessage(event)">
+        <input type="text" id="message" placeholder="Type your message here..." autocomplete="off" required>
+        <button type="submit">Send</button>
+    </form>
+    <button onclick="leaveRoom()">Leave Room</button>
+
+    <!-- Include SocketIO client library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
+    <script>
+        // Get username from query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username') || 'Anonymous';
+        const room = "{{ room }}";
+
+        // Connect to the SocketIO server
+        const socket = io();
+
+        // When connected, join the room
+        socket.on('connect', () => {
+            socket.emit('join', {username: username, room: room});
+        });
+
+        // Listen for messages from the server
+        socket.on('message', (data) => {
+            const li = document.createElement('li');
+            li.textContent = data.msg;
+            document.getElementById('messages').appendChild(li);
+        });
+
+        // Listen for status messages (e.g., join/leave notifications)
+        socket.on('status', (data) => {
+            const li = document.createElement('li');
+            li.textContent = data.msg;
+            li.style.fontStyle = 'italic';
+            document.getElementById('messages').appendChild(li);
+        });
+
+        // Send message event handler
+        function sendMessage(event) {
+            event.preventDefault();
+            const message = document.getElementById('message').value;
+            socket.emit('text', {username: username, room: room, message: message});
+            document.getElementById('message').value = '';
+        }
+
+        // Leave room event handler
+        function leaveRoom() {
+            socket.emit('leave', {username: username, room: room});
+            window.location.href = '/';
+        }
+    </script>
+{% endblock %}
